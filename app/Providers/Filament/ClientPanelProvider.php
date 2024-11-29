@@ -18,32 +18,30 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomainOrSubdomain;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
-class TenantPanelProvider extends PanelProvider
+class ClientPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('tenant')
-            ->path('tenant')
+            ->id('client')
+            ->path('client')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Tenant/Resources'), for: 'App\\Filament\\Tenant\\Resources')
-            ->discoverPages(in: app_path('Filament/Tenant/Pages'), for: 'App\\Filament\\Tenant\\Pages')
+            ->discoverResources(in: app_path('Filament/Client/Resources'), for: 'App\\Filament\\Client\\Resources')
+            ->discoverPages(in: app_path('Filament/Client/Pages'), for: 'App\\Filament\\Client\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Tenant/Widgets'), for: 'App\\Filament\\Tenant\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Client/Widgets'), for: 'App\\Filament\\Client\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
-                InitializeTenancyBySubdomain::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -53,6 +51,12 @@ class TenantPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+            ])
+            ->middleware([
+                'universal',
+                InitializeTenancyByDomainOrSubdomain::class,
+                PreventAccessFromCentralDomains::class,
+
             ])
             ->authMiddleware([
                 Authenticate::class,

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomainOrSubdomain;
 use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -19,12 +21,17 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 |
 */
 
-// Route::middleware([
-//     'web',
-//     InitializeTenancyBySubdomain::class,
-//     PreventAccessFromCentralDomains::class,
-// ])->group(function () {
-//     Route::get('/', function () {
-//         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
-//     });
-// });
+Route::middleware([
+    'web',
+    InitializeTenancyByDomainOrSubdomain::class,
+    PreventAccessFromCentralDomains::class,
+])->group(function () {
+    Route::get('/', function () {
+        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
+    });
+
+    Route::get('/get-user', function () {
+        $user = User::first();
+        return 'Welcome to the tenant-specific dashboard for ' . request()->getHost() . ' and the user is ' . $user->name;
+    });
+});
