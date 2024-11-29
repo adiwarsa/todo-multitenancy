@@ -1,0 +1,11 @@
+models:
+  Category:
+    name: string
+    relationships:
+      hasMany: Todo
+
+  Todo:
+    title: string
+    description: string
+    category_id: foreign nullable
+    user_id: foreign

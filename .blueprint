@@ -1,0 +1,11 @@
+created:
+    - database/factories/CategoryFactory.php
+    - database/factories/TodoFactory.php
+    - database/migrations/2024_11_29_131136_create_categories_table.php
+    - database/migrations/2024_11_29_131137_create_todos_table.php
+    - app/Models/Category.php
+    - app/Models/Todo.php
+models:
+    Category: { name: string, relationships: { hasMany: Todo } }
+    Todo: { title: string, description: string, category_id: 'foreign nullable', user_id: foreign }
+    User: { name: string, email: string, email_verified_at: 'timestamp nullable', password: string, remember_token: 'string:100 nullable' }
